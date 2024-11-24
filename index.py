@@ -9,6 +9,9 @@ from quart_cors import cors
 from util.download import (CACHE_DIR, DOWNLOAD_DIR, ZIP_DIR, start,
                            start_playlist)
 from util.spotify import start_token_thread
+from util.statistics import (cacheStorage, playlistStorage, songStorage,
+                             totalCaches, totalPlaylists, totalSongData,
+                             totalSongs, totalStorage)
 
 app = Quart(__name__)
 app = cors(app, allow_origin="*")
@@ -60,6 +63,25 @@ async def serve_action():
         return await serve_audio(id)
 
     return await send_file("static/result.html")
+
+
+@app.route("/stats")
+async def serve_stats():
+    return {
+        "failed": False,
+        "data": {
+            "total": await totalCaches(),
+            "songs": await totalSongs(),
+            "caches": await totalSongData(),
+            "playlists": await totalPlaylists(),
+        },
+        "storage": {
+            "total": await totalStorage(),
+            "songs": await songStorage(),
+            "playlists": await playlistStorage(),
+            "caches": await cacheStorage(),
+        },
+    }
 
 
 @app.route("/")
