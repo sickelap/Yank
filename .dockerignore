@@ -1,0 +1,9 @@
+*/__pycache__/*
+.git
+.venv
+cache
+music
+zip
+
+Dockerfile
+docker-compose.yml

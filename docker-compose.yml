@@ -1,0 +1,18 @@
+services:
+  pppj-music:
+    build:
+      context: .
+    container_name: pppj-music
+    ports:
+      - 2002:5000
+    env_file:
+      - .env
+    volumes:
+      - downloads:/app/music
+      - playlists:/app/zip
+      - cache:/app/cache
+
+volumes:
+  downloads: {}
+  playlists: {}
+  cache: {}
