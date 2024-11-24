@@ -58,6 +58,7 @@ def zip_folder(folder_path, output_path):
 def download_track(track_id, isrc):
     track = deezer.get_track(track_id)
     print(f"[{isrc}] Starting download")
+    print(track)
     track["download"](
         DOWNLOAD_DIR,
         quality=track_formats.MP3_320,
@@ -108,10 +109,14 @@ async def start(id):
             with open(cache_file, "w") as f:
                 json.dump(j, f)
 
-        pathfile = Path(os.path.join(DOWNLOAD_DIR, f"{isrc}.mp4"))
+        artist = j["artist"]["name"]
+        album = j["album"]["title"]
+        title = j["title"]
+
+        pathfile = Path(os.path.join(DOWNLOAD_DIR, f"{isrc}.mp3"))
         if pathfile.is_file():
             print(f"[{isrc}] Already cached")
-            return pathfile
+            return pathfile, f"{artist} - {title}.mp3"
 
         print(f"[{isrc}] Not cached")
         track_id = j.get("id")
@@ -120,7 +125,7 @@ async def start(id):
             return "none"
 
         download_track(track_id, isrc)
-        return pathfile
+        return pathfile, f"{artist} - {title}.mp3"
 
     except Exception as e:
         print(f"{e} at line {sys.exc_info()[-1].tb_lineno}")

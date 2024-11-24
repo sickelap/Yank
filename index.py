@@ -20,8 +20,16 @@ ip = os.environ.get("ip")
 
 async def serve_audio(id):
     try:
-        filename = await start(id)
-        return await send_file(filename, mimetype="audio/mpeg"), 200
+        path, filename = await start(id)
+        print(path, filename)
+        return (
+            await send_file(
+                path,
+                as_attachment=True,
+                attachment_filename=filename,
+            ),
+            200,
+        )
     except:
         return {"failed": True, "message": "Song not found"}, 404
 
