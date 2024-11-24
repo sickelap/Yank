@@ -17,7 +17,9 @@ load_dotenv()
 
 arl = os.environ.get("deezer_arl")
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
+BASE_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), os.path.pardir, "data")
+)
 DOWNLOAD_DIR = os.path.join(BASE_DIR, "music")
 CACHE_DIR = os.path.join(BASE_DIR, "cache")
 ZIP_DIR = os.path.join(BASE_DIR, "zip")
@@ -68,7 +70,7 @@ def download_track(track_id, isrc):
 
 def download_playlist(id_list, playlist_id):
     print("Starting playlist download")
-    download_dir = f"./music/{playlist_id}/"
+    download_dir = os.path.join(DOWNLOAD_DIR, playlist_id)
     downloader = Downloader(
         deezer,
         id_list,
@@ -95,7 +97,7 @@ async def start(id):
             print("Song not found")
             return "none"
 
-        cache_file = Path(f"./cache/{isrc}.json")
+        cache_file = Path(os.path.join(CACHE_DIR, f"{isrc}.json"))
         if cache_file.is_file():
             print(f"[{isrc}] Found data in cache")
             with open(cache_file, "r") as f:
@@ -106,7 +108,7 @@ async def start(id):
             with open(cache_file, "w") as f:
                 json.dump(j, f)
 
-        pathfile = Path(f"./music/{isrc}.mp3")
+        pathfile = Path(os.path.join(DOWNLOAD_DIR, f"{isrc}.mp4"))
         if pathfile.is_file():
             print(f"[{isrc}] Already cached")
             return pathfile
@@ -126,9 +128,9 @@ async def start(id):
 
 
 async def start_playlist(id):
-    folder_to_zip = f"./music/{id}/"
-    output_zip_file = f"./zip/{id}"
-    pathfile = Path(f"./zip/{id}.zip")
+    folder_to_zip = os.path.join(DOWNLOAD_DIR, id)
+    output_zip_file = os.path.join(ZIP_DIR, id)
+    pathfile = Path(os.path.join(ZIP_DIR, f"{id}.zip"))
     isrc = id
 
     if pathfile.is_file():
@@ -145,7 +147,7 @@ async def start_playlist(id):
     deezer_ids = []
     for isrc in playlist_isrcs:
         try:  # this is to stop deezer blocking requests
-            cache_file = Path(f"./cache/{isrc}.json")
+            cache_file = Path(os.path.join(CACHE_DIR, f"{isrc}.json"))
             if cache_file.is_file():
                 print(f"[{isrc}] Found in data cache")
                 with open(cache_file, "r") as f:
