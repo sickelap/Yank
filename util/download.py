@@ -17,12 +17,13 @@ load_dotenv()
 
 arl = os.environ.get("deezer_arl")
 
-BASE_DIR = os.path.abspath(
+DEFAULT_DATA_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), os.path.pardir, "data")
 )
-DOWNLOAD_DIR = os.path.join(BASE_DIR, "music")
-CACHE_DIR = os.path.join(BASE_DIR, "cache")
-ZIP_DIR = os.path.join(BASE_DIR, "zip")
+DATA_DIR = os.environ.get("DATA_DIR", DEFAULT_DATA_DIR)
+DOWNLOAD_DIR = os.path.join(DATA_DIR, "music")
+CACHE_DIR = os.path.join(DATA_DIR, "cache")
+ZIP_DIR = os.path.join(DATA_DIR, "zip")
 
 try:
     print("Logging into Deezer...")
@@ -58,7 +59,6 @@ def zip_folder(folder_path, output_path):
 def download_track(track_id, isrc):
     track = deezer.get_track(track_id)
     print(f"[{isrc}] Starting download")
-    print(track)
     track["download"](
         DOWNLOAD_DIR,
         quality=track_formats.MP3_320,
@@ -110,7 +110,6 @@ async def start(id):
                 json.dump(j, f)
 
         artist = j["artist"]["name"]
-        album = j["album"]["title"]
         title = j["title"]
 
         pathfile = Path(os.path.join(DOWNLOAD_DIR, f"{isrc}.mp3"))

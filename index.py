@@ -21,7 +21,6 @@ ip = os.environ.get("ip")
 async def serve_audio(id):
     try:
         path, filename = await start(id)
-        print(path, filename)
         return (
             await send_file(
                 path,

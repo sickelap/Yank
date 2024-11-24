@@ -7,12 +7,10 @@ services:
       - 2002:5000
     env_file:
       - .env
+    environment:
+      - DATA_DIR=/data
     volumes:
-      - downloads:/app/music
-      - playlists:/app/zip
-      - cache:/app/cache
+      - data:/data
 
 volumes:
-  downloads: {}
-  playlists: {}
-  cache: {}
+  data: {}
