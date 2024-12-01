@@ -1,9 +1,7 @@
 */__pycache__/*
 .git
 .venv
-cache
-music
-zip
+data
 
 Dockerfile
 docker-compose.yml
