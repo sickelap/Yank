@@ -101,6 +101,16 @@ async def serve_static(path):
     return await send_from_directory("static", path)
 
 
+@app.route("/download/playlist/<path:path>")
+async def serve_playlist_download(path):
+    return await send_from_directory(ZIP_DIR, path)
+
+
+@app.route("/download/track/<path:path>")
+async def serve_track_download(path):
+    return await send_from_directory(DOWNLOAD_DIR, path)
+
+
 token_thread = threading.Thread(target=start_token_thread)
 token_thread.start()
 
