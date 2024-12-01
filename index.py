@@ -4,7 +4,7 @@ from contextlib import suppress
 from urllib.parse import urlparse
 
 from dotenv import load_dotenv
-from quart import Quart, request, send_file, send_from_directory
+from quart import Quart, Response, request, send_file, send_from_directory
 from quart_cors import cors
 from util.download import (CACHE_DIR, DOWNLOAD_DIR, ZIP_DIR, start,
                            start_playlist)
@@ -24,14 +24,18 @@ ip = os.environ.get("ip")
 async def serve_audio(id):
     try:
         path, filename = await start(id)
-        return (
-            await send_file(
-                path,
-                as_attachment=True,
-                attachment_filename=filename,
-            ),
-            200,
-        )
+        file = os.path.basename(path)
+        response = Response(status=302)
+        response.headers["Location"] = f"/download/track/{file}"
+        # path, filename = await start(id)
+        # return (
+        #     await send_file(
+        #         path,
+        #         as_attachment=True,
+        #         attachment_filename=filename,
+        #     ),
+        #     200,
+        # )
     except:
         return {"failed": True, "message": "Song not found"}, 404
 
@@ -39,15 +43,18 @@ async def serve_audio(id):
 async def serve_playlist(id):
     try:
         filename = await start_playlist(id)
-        return (
-            await send_file(
-                filename,
-                as_attachment=True,
-                attachment_filename=f"{id}.zip",
-                mimetype="application/zip",
-            ),
-            200,
-        )
+        response = Response(status=302)
+        response.headers["Location"] = f"/download/playlist/{id}.zip"
+        return response
+        # return (
+        #     await send_file(
+        #         filename,
+        #         as_attachment=True,
+        #         attachment_filename=f"{id}.zip",
+        #         mimetype="application/zip",
+        #     ),
+        #     200,
+        # )
     except:
         return {"failed": True, "message": "Playlist not found"}, 404
 
