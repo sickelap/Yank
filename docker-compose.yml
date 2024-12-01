@@ -10,7 +10,7 @@ services:
     environment:
       - DATA_DIR=/data
     volumes:
-      - data:/data
+      - ./data:/data
 
 volumes:
   data: {}
